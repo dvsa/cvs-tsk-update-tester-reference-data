@@ -1,29 +1,14 @@
-# cvs-tsk-update-test-stations
+# cvs-tsk-doc-gen-init
 
-AWS Lambda function that updates the list of test stations in the ATF Sites DynamoDB from the master list in Dynamics CE.
-
-Designed to be invoked by a timer every night to pick up the previous days changes, but can be invoked manually.
+AWS Lambda function that gets a plate number, updates the tech record, saves it and then places related data on a queue.
 
 ## Description
 
-The function authenticates with Azure AD, and uses the returned token to retrieve the details of test stations that have changed from Dynamics CE using OData. Each updated test station is added to EventBridge as a separate event, and EventBridge is then responsible for invoking the Test Station API to perform the actual update in DynamoDB.
-
-The test stations are queried on their `modifiedon` property; **by default this is midnight yesterday**, but any valid ISO-formatted date can be passed in.
-
-For example, to update all test stations that have been modified on or since the 1st of December 2021:
-```json
-{
-  "detail": {
-    "lastModifiedDate": "2021-12-01"
-  }
-}
-```
-
-The solution design can be found in [Confluence](https://wiki.dvsacloud.uk/display/HVT/Selected+Solution+Detail)
+TODO: Fill this in
 
 ## Dependencies
 
-The project runs on node 14.x with typescript. For further details about project dependencies, please refer to the `package.json` file.
+The project runs on node 18.x with typescript. For further details about project dependencies, please refer to the `package.json` file.
 [nvm](https://github.com/nvm-sh/nvm/blob/master/README.md) is used to managed node versions and configuration explicitly done per project using an `.npmrc` file.
 
 ## Running the project
@@ -166,12 +151,14 @@ The code uses [eslint](https://eslint.org/docs/user-guide/getting-started), [typ
 SonarQube is available locally, please follow the instructions below if you wish to run the service locally (docker is the preferred approach):
 
 - _Docker_:
+
   - Run `docker run -d -p 9000:9000 --name sonarqube sonarqube:latest`
   - The SonarQube container won't start automatically with your PC. To start it run `docker start sonarqube`
   - Login with admin/admin - http://localhost:9000 and create a Project with name and key found in `./sonar-project.properties`. There you'll also find instructions for creating and configuring an authentication token.
   - Run the analysis with `npm run sonar-scanner`
 
 - _Brew_:
+
   - Install SonarQube using brew
   - Change `sonar.host.url` to point to localhost, by default, sonar runs on `http://localhost:9000`
   - run the sonar server `sonar start`, then perform your analysis `npm run sonar-scanner`
