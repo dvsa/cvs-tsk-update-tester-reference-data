@@ -1,4 +1,4 @@
-service: cvs-tsk-update-test-stations
+service: cvs-tsk-doc-gen-init
 useDotenv: true
 
 plugins:

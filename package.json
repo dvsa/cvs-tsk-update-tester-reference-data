@@ -1,5 +1,5 @@
 {
-  "name": "cvs-tsk-update-test-stations",
+  "name": "cvs-tsk-doc-gen-init",
   "version": "1.0.0",
   "description": "",
   "main": "src/handler.ts",
@@ -44,13 +44,8 @@
     "tools-setup": "echo 'nothing to do for now'"
   },
   "dependencies": {
-    "@azure/msal-node": "1.5.0",
     "aws-lambda": "1.0.6",
     "aws-sdk": "2.1029.0",
-    "axios": "0.25.0",
-    "dateformat": "4.6.3",
-    "knex": "0.95.14",
-    "p-retry": "4.6.1",
     "source-map-support": "0.5.19",
     "winston": "3.3.3"
   },
@@ -99,12 +94,12 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dvsa/cvs-tsk-update-test-stations/issues"
+    "url": "https://github.com/dvsa/cvs-tsk-doc-gen-init/issues"
   },
-  "homepage": "https://github.com/dvsa/cvs-tsk-update-test-stations#readme",
+  "homepage": "https://github.com/dvsa/cvs-tsk-doc-gen-init#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dvsa/cvs-tsk-update-test-stations.git"
+    "url": "https://github.com/dvsa/cvs-tsk-doc-gen-init.git"
   },
   "keywords": [
     "DVLA",

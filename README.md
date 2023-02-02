@@ -1,4 +1,4 @@
-# cvs-tsk-update-test-stations
+# cvs-tsk-doc-gen-init
 
 AWS Lambda function that gets a plate number, updates the tech record, saves it and then places related data on a queue.
 
