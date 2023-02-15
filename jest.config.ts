@@ -15,6 +15,7 @@ const config: Config.InitialOptions = {
     '**/?(*.)+(spec|test).[tj]s?(x)',
   ],
   testPathIgnorePatterns: ['/.build/'],
+  setupFiles: ['dotenv/config'],
   collectCoverage: false,
   collectCoverageFrom: ['src/**/*.{js,ts}', '!**/node_modules/**'],
   //TODO Add for integration
