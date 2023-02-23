@@ -1,5 +1,5 @@
 import { SQS } from 'aws-sdk';
-import { NewPlateRequest } from '../models/Request.model';
+import { NewLetterRequest, NewPlateRequest } from '../models/Request.model';
 import { DocumentName, SQSRequestBody } from '../models/SqsPayloadRequest.model';
 import { TechRecord, Vehicle, VehicleType } from '../models/Vehicle.model';
 import logger from '../observability/logger';
@@ -7,13 +7,20 @@ import { getConfig, Config } from '../config';
 
 const config: Config = getConfig();
 
-export const sendTechRecordToSQS = async (techRecord: TechRecord, request: NewPlateRequest): Promise<void> => {
+export const sendTechRecordToSQS = async (
+  techRecord: TechRecord,
+  request: NewPlateRequest | NewLetterRequest,
+  type: string,
+): Promise<void> => {
   logger.info('Send tech record to SQS');
 
   const sqs = new SQS({ apiVersion: '2012-11-05' });
 
   const params = {
-    MessageBody: JSON.stringify(formatPayload(techRecord, request)),
+    MessageBody:
+      type === 'letter'
+        ? JSON.stringify(formatLetterPayload(techRecord, request as NewLetterRequest))
+        : JSON.stringify(formatPlatePayload(techRecord, request as NewPlateRequest)),
     QueueUrl: config.DOC_GEN_SQS_QUEUE,
   };
 
@@ -25,7 +32,7 @@ export const sendTechRecordToSQS = async (techRecord: TechRecord, request: NewPl
   }
 };
 
-export const formatPayload = (techRecord: TechRecord, request: NewPlateRequest): SQSRequestBody => {
+export const formatPlatePayload = (techRecord: TechRecord, request: NewPlateRequest): SQSRequestBody => {
   const vehicle: Vehicle = {
     vin: request.vin,
     primaryVrm: request.primaryVrm,
@@ -40,8 +47,23 @@ export const formatPayload = (techRecord: TechRecord, request: NewPlateRequest):
 
   return {
     vehicle,
-    // TODO: Document to be determined by URL params (next sprint)
     plate,
     documentName: techRecord.vehicleType === VehicleType.Trailer ? DocumentName.MINISTRY_TRL : DocumentName.MINISTRY,
+  };
+};
+
+export const formatLetterPayload = (techRecord: TechRecord, request: NewLetterRequest): SQSRequestBody => {
+  const vehicle: Vehicle = {
+    vin: request.vin,
+    primaryVrm: request.primaryVrm,
+    systemNumber: request.systemNumber,
+    techRecord,
+    trailerId: request.trailerId,
+  };
+
+  return {
+    vehicle,
+    letter: techRecord.letterOfAuth,
+    documentName: DocumentName.TRL_INTO_SERVICE,
   };
 };

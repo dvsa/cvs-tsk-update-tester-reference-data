@@ -1,3 +1,4 @@
+import { Letter } from './Letter.model';
 import { Plates } from './Plates.model';
 
 export interface Vehicle {
@@ -9,9 +10,10 @@ export interface Vehicle {
 }
 
 export interface TechRecord {
-  plates: Plates[];
+  plates?: Plates[];
   vehicleType: string;
   statusCode: StatusCode;
+  letterOfAuth?: Letter;
 }
 
 export enum VehicleType {
