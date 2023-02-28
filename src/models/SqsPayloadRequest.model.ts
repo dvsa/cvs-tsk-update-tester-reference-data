@@ -7,6 +7,7 @@ export interface SQSRequestBody {
   plate?: Plates;
   letter?: Letter;
   documentName: DocumentName;
+  recipientEmailAddress: string;
 }
 
 export const enum DocumentName {

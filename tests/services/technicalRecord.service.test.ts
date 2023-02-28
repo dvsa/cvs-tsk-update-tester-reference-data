@@ -37,6 +37,7 @@ describe('add plate tests', () => {
       systemNumber: '123456',
       techRecord: [technicalRecord] as TechRecord[],
       vtmUsername: 'Username',
+      recipientEmailAddress: 'customer@example.com',
       reasonForCreation: PlateReasonForIssue.DESTROYED,
     };
 
@@ -56,6 +57,7 @@ describe('add plate tests', () => {
       systemNumber: '123456',
       techRecord: [technicalRecord] as TechRecord[],
       vtmUsername: 'Username',
+      recipientEmailAddress: 'customer@example.com',
       reasonForCreation: PlateReasonForIssue.DESTROYED,
     };
 
@@ -74,6 +76,7 @@ describe('add plate tests', () => {
       systemNumber: '123456',
       techRecord: [technicalRecord] as TechRecord[],
       vtmUsername: null,
+      recipientEmailAddress: 'customer@example.com',
       reasonForCreation: PlateReasonForIssue.DESTROYED,
     };
 
@@ -94,6 +97,7 @@ describe('add plate tests', () => {
       systemNumber: '123456',
       techRecord: [technicalRecord] as TechRecord[],
       vtmUsername: 'Username',
+      recipientEmailAddress: 'customer@example.com',
       reasonForCreation: null,
     };
 
@@ -113,6 +117,7 @@ describe('add plate tests', () => {
       systemNumber: '123456',
       techRecord: null,
       vtmUsername: 'Username',
+      recipientEmailAddress: 'customer@example.com',
       reasonForCreation: PlateReasonForIssue.DESTROYED,
     };
 
@@ -140,6 +145,7 @@ describe('add letter tests', () => {
       systemNumber: '123456',
       techRecord: [technicalRecord] as TechRecord[],
       vtmUsername: 'Username',
+      recipientEmailAddress: 'customer@example.com',
       letterType: LetterType.TRL_ACCEPTANCE,
       paragraphId: ParagraphId.PARAGRAPH_3,
     };

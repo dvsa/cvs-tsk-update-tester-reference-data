@@ -49,6 +49,7 @@ export const formatPlatePayload = (techRecord: TechRecord, request: NewPlateRequ
     vehicle,
     plate,
     documentName: techRecord.vehicleType === VehicleType.Trailer ? DocumentName.MINISTRY_TRL : DocumentName.MINISTRY,
+    recipientEmailAddress: request.recipientEmailAddress,
   };
 };
 
@@ -65,5 +66,6 @@ export const formatLetterPayload = (techRecord: TechRecord, request: NewLetterRe
     vehicle,
     letter: techRecord.letterOfAuth,
     documentName: DocumentName.TRL_INTO_SERVICE,
+    recipientEmailAddress: request.recipientEmailAddress,
   };
 };

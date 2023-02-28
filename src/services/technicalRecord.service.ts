@@ -7,7 +7,7 @@ import logger from '../observability/logger';
 import { Letter } from '../models/Letter.model';
 
 export const addNewPlate = async (request: NewPlateRequest): Promise<TechRecord[]> => {
-  if (!request.reasonForCreation || !request.vtmUsername || !request.techRecord) {
+  if (!request.reasonForCreation || !request.vtmUsername || !request.recipientEmailAddress || !request.techRecord) {
     throw new Error('Bad Request');
   }
 
@@ -61,7 +61,7 @@ export const validatePlate = (plate: Plates): void => {
 };
 
 export const addNewLetter = (request: NewLetterRequest): TechRecord[] => {
-  if (!request.vtmUsername || !request.techRecord) {
+  if (!request.vtmUsername || !request.recipientEmailAddress || !request.techRecord) {
     throw new Error('Bad Request');
   }
 

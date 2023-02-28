@@ -32,9 +32,11 @@ describe('test sqs service', () => {
       systemNumber: '1234',
       reasonForCreation: PlateReasonForIssue.DESTROYED,
       vtmUsername: 'User',
+      recipientEmailAddress: 'customer@example.com',
       techRecord: [techRecord] as TechRecord[],
     };
-    it('should let me format message without a trailerID', () => {
+
+    it('should let me format message without a trailerId', () => {
       const res = formatPlatePayload(techRecord, request);
 
       const vehicle = {
@@ -55,11 +57,12 @@ describe('test sqs service', () => {
         vehicle,
         plate,
         documentName: DocumentName.MINISTRY,
+        recipientEmailAddress: 'customer@example.com'
       };
       expect(res).toEqual(expectedRes);
     });
 
-    it('should let me format message with a trailerID and send correct documentName', () => {
+    it('should let me format message with a trailerId and send correct documentName', () => {
       request.trailerId = '12345';
       request.techRecord[0].vehicleType = 'trl';
       const res = formatPlatePayload(techRecord, request);
@@ -83,10 +86,12 @@ describe('test sqs service', () => {
         vehicle,
         plate,
         documentName: DocumentName.MINISTRY_TRL,
+        recipientEmailAddress: 'customer@example.com'
       };
       expect(res).toEqual(expectedRes);
     });
   });
+
   describe('test letter payload format', () => {
     const techRecord: TechRecord = {
       letterOfAuth: {
@@ -104,11 +109,13 @@ describe('test sqs service', () => {
       primaryVrm: 'vrm1',
       systemNumber: '1234',
       vtmUsername: 'User',
+      recipientEmailAddress: 'customer@example.com',
       techRecord: [techRecord] as TechRecord[],
       letterType: LetterType.TRL_ACCEPTANCE,
       paragraphId: ParagraphId.PARAGRAPH_3,
     };
-    it('should let me format message without a trailerID', () => {
+
+    it('should let me format message without a trailerId', () => {
       const res = formatLetterPayload(techRecord, request);
 
       const vehicle = {
@@ -129,6 +136,7 @@ describe('test sqs service', () => {
         vehicle,
         letter,
         documentName: DocumentName.TRL_INTO_SERVICE,
+        recipientEmailAddress: 'customer@example.com'
       };
       expect(res).toEqual(expectedRes);
     });
