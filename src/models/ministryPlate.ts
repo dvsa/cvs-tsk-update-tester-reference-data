@@ -74,7 +74,7 @@ export class MinistryPlateDocument extends DocumentModel {
     const plateData: Partial<MinistryPlate> = {
       plateSerialNumber: plate.plateSerialNumber,
       dtpNumber: techRecord.brakes.dtpNumber,
-      primaryVrm: vehicle.primaryVrm,
+      primaryVrm: vehicle.primaryVrm ?? vehicle.trailerId,
       vin: vehicle.vin,
       variantNumber: techRecord.variantNumber,
       approvalTypeNumber: techRecord.approvalTypeNumber,
@@ -99,13 +99,13 @@ export class MinistryPlateDocument extends DocumentModel {
     };
 
     if (techRecord.vehicleType === VehicleType.HGV) {
-      plateData.maxLoadOnCoupling = techRecord.maxLoadOnCoupling?.toString();
       plateData.frontAxleTo5thWheelCouplingMin = techRecord.frontAxleTo5thWheelCouplingMin?.toString();
       plateData.frontAxleTo5thWheelCouplingMax = techRecord.frontAxleTo5thWheelCouplingMax?.toString();
       plateData.speedLimiterMrk = techRecord.speedLimiterMrk?.toString();
     }
 
     if (techRecord.vehicleType === VehicleType.TRL) {
+      plateData.maxLoadOnCoupling = techRecord.maxLoadOnCoupling?.toString();
       plateData.couplingCenterToRearTrlMax = techRecord.couplingCenterToRearTrlMax?.toString();
       plateData.couplingCenterToRearTrlMin = techRecord.couplingCenterToRearTrlMin?.toString();
     }
