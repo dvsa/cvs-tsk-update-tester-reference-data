@@ -2,7 +2,7 @@ import { Request } from './request';
 import { DocumentName } from '../enums/documentName.enum';
 import { VehicleType } from '../enums/vehicleType.enum';
 import { DocumentModel } from './documentModel';
-import { IAxle } from './vehicleTechRecord';
+import { IAxle, ITechRecord } from './vehicleTechRecord';
 
 export type MinistryPlate = {
   plateSerialNumber: string;
@@ -95,13 +95,13 @@ export class MinistryPlateDocument extends DocumentModel {
       dimensionWidth: techRecord.dimensions.width?.toString(),
       plateIssueDate: plate.plateIssueDate,
       tyreUseCode: techRecord.tyreUseCode,
-      axles: this.populateAxles(techRecord.axles),
+      axles: this.populateAxles(techRecord.axles, techRecord),
     };
 
     if (techRecord.vehicleType === VehicleType.HGV) {
       plateData.frontAxleTo5thWheelCouplingMin = techRecord.frontAxleTo5thWheelCouplingMin?.toString();
       plateData.frontAxleTo5thWheelCouplingMax = techRecord.frontAxleTo5thWheelCouplingMax?.toString();
-      plateData.speedLimiterMrk = techRecord.speedLimiterMrk?.toString();
+      plateData.speedLimiterMrk = techRecord.speedLimiterMrk ? 'Yes' : 'No';
     }
 
     if (techRecord.vehicleType === VehicleType.TRL) {
@@ -117,7 +117,7 @@ export class MinistryPlateDocument extends DocumentModel {
     this.metaData.vrm = vehicle.primaryVrm ?? vehicle.trailerId;
   }
 
-  private populateAxles = (axles: IAxle[]): Axles => {
+  private populateAxles = (axles: IAxle[], techRecord: ITechRecord): Axles => {
     const plateAxles: Axles = {
       axle1: {},
       axle2: {},
@@ -125,16 +125,22 @@ export class MinistryPlateDocument extends DocumentModel {
       axle4: {},
     } as Axles;
     const terminatingCondition = Math.min(axles.length, 4);
+    const generateTrlEec = !!(
+      techRecord.vehicleType === VehicleType.TRL && techRecord.couplingCenterToRearTrlMax <= 120000
+    );
     for (let i = 0; i < terminatingCondition; i++) {
       plateAxles[`axle${i + 1}`] = {
         weights: {
           gbWeight: axles[i].weights?.gbWeight?.toString(),
-          eecWeight: axles[i].weights?.eecWeight?.toString(),
+          eecWeight:
+            techRecord.vehicleType === VehicleType.HGV || generateTrlEec
+              ? axles[i].weights?.eecWeight?.toString()
+              : null,
           designWeight: axles[i].weights?.designWeight?.toString(),
         },
         tyres: {
           tyreSize: axles[i].tyres?.tyreSize,
-          plyRating: axles[i].tyres?.plyRating,
+          plyRating: axles[i].tyres?.dataTrAxles ?? axles[i].tyres?.plyRating,
           fitmentCode: axles[i].tyres?.fitmentCode,
         },
       };
