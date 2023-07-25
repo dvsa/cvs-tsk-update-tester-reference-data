@@ -48,7 +48,7 @@ export const formatPlatePayload = (techRecord: TechRecord, request: NewPlateRequ
   return {
     vehicle,
     plate,
-    documentName: techRecord.vehicleType === VehicleType.Trailer ? DocumentName.MINISTRY_TRL : DocumentName.MINISTRY,
+    documentName: techRecord.vehicleType === VehicleType.Trailer ? DocumentName.MINISTRY : DocumentName.MINISTRY,
     recipientEmailAddress: request.recipientEmailAddress,
   };
 };

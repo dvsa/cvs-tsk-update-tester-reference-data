@@ -85,7 +85,7 @@ describe('test sqs service', () => {
       const expectedRes = {
         vehicle,
         plate,
-        documentName: DocumentName.MINISTRY_TRL,
+        documentName: DocumentName.MINISTRY,
         recipientEmailAddress: 'customer@example.com'
       };
       expect(res).toEqual(expectedRes);
