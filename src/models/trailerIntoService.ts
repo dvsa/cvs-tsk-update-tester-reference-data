@@ -1,5 +1,7 @@
 /* eslint-disable no-underscore-dangle */
+import { TechRecordType } from '@dvsa/cvs-type-definitions/types/v3/tech-record/tech-record-verb-vehicle-type';
 import { DocumentName } from '../enums/documentName.enum';
+import { VehicleType } from '../enums/vehicleType.enum';
 import { DocumentModel } from './documentModel';
 import { Request } from './request';
 
@@ -12,7 +14,7 @@ export class TrailerIntoServiceDocument extends DocumentModel {
     this.filename = `letter_${techRecord.systemNumber}_${techRecord.vin}`;
 
     this.vin = techRecord.vin;
-    this.trailerId = techRecord.trailerId;
+    this.trailerId = (techRecord as TechRecordType<'trl', 'get'>).trailerId;
     this.applicantDetails = {
       name: techRecord.techRecord_applicantDetails_name,
       address1: techRecord.techRecord_applicantDetails_address1,
@@ -22,13 +24,13 @@ export class TrailerIntoServiceDocument extends DocumentModel {
       postCode: techRecord.techRecord_applicantDetails_postCode,
     };
     this.setLetterDateRequested(letter.letterDateRequested);
-    this.approvalTypeNumber = techRecord.techRecord_approvalTypeNumber;
+    this.approvalTypeNumber = techRecord.techRecord_vehicleType === VehicleType.TRL ? techRecord.techRecord_approvalTypeNumber : null;
     this.paragraphId = letter.paragraphId;
 
     // S3 metadata
     this.metaData.vin = techRecord.vin;
-    this.metaData['trailer-id'] = techRecord.trailerId;
-    this.metaData['approval-type-number'] = techRecord.techRecord_approvalTypeNumber;
+    this.metaData['trailer-id'] = (techRecord as TechRecordType<'trl', 'get'>).trailerId;
+    this.metaData['approval-type-number'] = techRecord.techRecord_vehicleType === VehicleType.TRL ? techRecord.techRecord_approvalTypeNumber : null;
     this.metaData['letter-type'] = letter.letterType;
     this.metaData['paragraph-id'] = letter.paragraphId.toString();
   }

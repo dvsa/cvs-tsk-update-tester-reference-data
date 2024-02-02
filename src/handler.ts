@@ -1,11 +1,11 @@
 import { Handler, SQSBatchResponse, SQSEvent } from 'aws-lambda';
 import { TextDecoder } from 'util';
-import logger from './observability/logger';
 import { DocumentModel } from './models/documentModel';
+import { getDocumentFromRequest } from './models/documentModel.factory';
 import { Request } from './models/request';
+import logger from './observability/logger';
 import { invokePdfGenLambda } from './services/Lamba.service';
 import { uploadPdfToS3 } from './services/S3.service';
-import { getDocumentFromRequest } from './models/documentModel.factory';
 
 export const handler: Handler = async (event: SQSEvent): Promise<SQSBatchResponse> => {
   logger.debug("Function triggered'.");

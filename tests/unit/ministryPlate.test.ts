@@ -1,9 +1,10 @@
 // import { ReasonForIssue } from "../../src/enums/reasonForIssue.enum";
+import { HGVAxles } from '@dvsa/cvs-type-definitions/types/v3/tech-record/get/hgv/complete';
+import { TechRecordType } from '@dvsa/cvs-type-definitions/types/v3/tech-record/tech-record-verb-vehicle-type';
 import { DocumentName } from '../../src/enums/documentName.enum';
 import { ReasonForIssue } from '../../src/enums/reasonForIssue.enum';
 import { MinistryPlateDocument } from '../../src/models/ministryPlate';
 import { Request } from '../../src/models/request';
-import { IAxle } from '../../src/models/vehicleTechRecord';
 import { generateVehicle } from './unitTestUtils';
 
 describe('Document Model tests', () => {
@@ -29,7 +30,7 @@ describe('Document Model tests', () => {
   });
 
   it('should only populate 4 axles if there are more on the vehicle', () => {
-    request.techRecord.techRecord_axles = [
+    (request.techRecord as TechRecordType<'hgv', 'get'>).techRecord_axles = [
       {
         tyres_tyreSize: '1',
         tyres_plyRating: '2',
@@ -70,7 +71,7 @@ describe('Document Model tests', () => {
         weights_eecWeight: 999,
         weights_designWeight: 999,
       },
-    ] as IAxle[];
+    ] as unknown as HGVAxles[];
     const document = new MinistryPlateDocument(request);
     expect(document.PLATES_DATA.axles.axle4.weights.gbWeight).toBe('123');
   });
@@ -88,7 +89,7 @@ describe('Document Model tests', () => {
   });
 
   it('should handle 0 axles', () => {
-    request.techRecord.techRecord_axles = [] as IAxle[];
+    (request.techRecord as TechRecordType<'hgv', 'get'>).techRecord_axles = [] as HGVAxles[];
     const document = new MinistryPlateDocument(request);
     expect(document).toBeTruthy();
   });
@@ -99,7 +100,7 @@ describe('Document Model tests', () => {
   });
 
   it('should handle 2 axles', () => {
-    request.techRecord.techRecord_axles = [
+    (request.techRecord as TechRecordType<'hgv', 'get'>).techRecord_axles = [
       {
         tyres_tyreSize: '1',
         tyres_plyRating: '2',
@@ -116,13 +117,13 @@ describe('Document Model tests', () => {
         weights_eecWeight: 123,
         weights_designWeight: 123,
       },
-    ] as IAxle[];
+    ] as unknown as HGVAxles[];
     const document = new MinistryPlateDocument(request);
     expect(document).toBeTruthy();
   });
 
   it('should handle 3 axles', () => {
-    request.techRecord.techRecord_axles = [
+    (request.techRecord as TechRecordType<'hgv', 'get'>).techRecord_axles = [
       {
         tyres_tyreSize: '1',
         tyres_plyRating: '2',
@@ -147,7 +148,7 @@ describe('Document Model tests', () => {
         weights_eecWeight: 123,
         weights_designWeight: 123,
       },
-    ] as IAxle[];
+    ] as unknown as HGVAxles[];
     const document = new MinistryPlateDocument(request);
     expect(document).toBeTruthy();
   });
@@ -187,24 +188,26 @@ describe('Document Model tests', () => {
         weights_eecWeight: 123,
         weights_designWeight: 123,
       },
-    ] as IAxle[];
+    ] as unknown as HGVAxles[];
     const document = new MinistryPlateDocument(request);
     expect(document).toBeTruthy();
   });
 
   it('should create attributes if vehicle is missing properties', () => {
-    request.techRecord.techRecord_vehicleType = 'trl';
-    request.techRecord.techRecord_manufactureYear = undefined;
-    request.techRecord.techRecord_grossGbWeight = undefined;
-    request.techRecord.techRecord_grossEecWeight = undefined;
-    request.techRecord.techRecord_grossDesignWeight = undefined;
-    request.techRecord.techRecord_trainGbWeight = undefined;
-    request.techRecord.techRecord_trainEecWeight = undefined;
-    request.techRecord.techRecord_trainDesignWeight = undefined;
-    request.techRecord.techRecord_maxTrainGbWeight = undefined;
-    request.techRecord.techRecord_maxTrainEecWeight = undefined;
-    request.techRecord.techRecord_dimensions_length = undefined;
-    request.techRecord.techRecord_dimensions_width = undefined;
+    request.techRecord.techRecord_vehicleType = 'hgv';
+    if (request.techRecord.techRecord_vehicleType === 'hgv') {
+      request.techRecord.techRecord_manufactureYear = undefined;
+      request.techRecord.techRecord_grossGbWeight = undefined;
+      request.techRecord.techRecord_grossEecWeight = undefined;
+      request.techRecord.techRecord_grossDesignWeight = undefined;
+      request.techRecord.techRecord_trainGbWeight = undefined;
+      request.techRecord.techRecord_trainEecWeight = undefined;
+      request.techRecord.techRecord_trainDesignWeight = undefined;
+      request.techRecord.techRecord_maxTrainGbWeight = undefined;
+      request.techRecord.techRecord_maxTrainEecWeight = undefined;
+      request.techRecord.techRecord_dimensions_length = undefined;
+      request.techRecord.techRecord_dimensions_width = undefined;
+    }
     const document = new MinistryPlateDocument(request);
     expect(document).toBeTruthy();
   });
