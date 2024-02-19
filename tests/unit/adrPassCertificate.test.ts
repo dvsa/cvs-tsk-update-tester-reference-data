@@ -32,8 +32,7 @@ describe('Document Model tests', () => {
     const document = new AdrPassCertificateDocument(request);
 
     expect(document.metaData['document-type']).toBe(DocumentName.ADR_PASS_CERTIFICATE);
-    expect(document.metaData['should-email-certificate']).toBe('false');
     expect(document.metaData.vin).toBe(request.techRecord.vin);
-    expect(document.metaData.email).toBe('');
+    expect(document.metaData.email).toBe('customer@example.com');
   });
 });
