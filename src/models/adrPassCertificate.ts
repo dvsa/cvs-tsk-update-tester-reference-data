@@ -41,7 +41,7 @@ export type AdrCert = {
 
 export class AdrPassCertificateDocument extends DocumentModel {
   constructor(request: Request) {
-    super('');
+    super(request.recipientEmailAddress);
     const { techRecord, adrCertificate } = request;
 
     this.setDocumentType(DocumentName.ADR_PASS_CERTIFICATE);
@@ -49,7 +49,6 @@ export class AdrPassCertificateDocument extends DocumentModel {
 
     // S3 metadata
     this.metaData.vin = techRecord.vin;
-    this.metaData['should-email-certificate'] = 'false';
 
     const adrData: AdrCert = {
       // ADR data
