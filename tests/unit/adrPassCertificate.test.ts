@@ -1,3 +1,4 @@
+import { ADRCertificateTypes } from '@dvsa/cvs-type-definitions/types/v3/tech-record/enums/adrCertificateTypes.enum.js';
 import { DocumentName } from '../../src/enums/documentName.enum';
 import { AdrPassCertificateDocument } from '../../src/models/adrPassCertificate';
 import { Request } from '../../src/models/request';
@@ -15,8 +16,7 @@ describe('Document Model tests', () => {
         createdByName: 'mr example',
         generatedTimestamp: new Date().toISOString(),
         certificateId: 'adrPass_1234567_123456',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        certificateType: 'PASS' as any,
+        certificateType: ADRCertificateTypes.PASS,
       },
     };
   });

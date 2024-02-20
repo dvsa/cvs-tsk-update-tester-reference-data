@@ -49,6 +49,11 @@ export class AdrPassCertificateDocument extends DocumentModel {
 
     // S3 metadata
     this.metaData.vin = techRecord.vin;
+    this.metaData.vrms = techRecord.techRecord_vehicleType === 'trl' ? techRecord.trailerId : techRecord.primaryVrm;
+    this.metaData['cert-type'] = 'ADR01C';
+    this.metaData['cert-index'] = '1';
+    this.metaData['test-type-name'] = 'ADR';
+    this.metaData['test-type-result'] = adrCertificate.certificateType.toLowerCase();
 
     const adrData: AdrCert = {
       // ADR data
