@@ -51,12 +51,13 @@ export class AdrPassCertificateDocument extends DocumentModel {
     this.metaData.vin = techRecord.vin;
     this.metaData.vrms = techRecord.techRecord_vehicleType === 'trl' ? techRecord.trailerId : techRecord.primaryVrm;
     this.metaData['cert-type'] = 'ADR01C';
-    this.metaData['cert-index'] = '1';
+    this.metaData['cert-index'] = techRecord.techRecord_adrPassCertificateDetails.length.toString();
+    this.metaData['total-certs'] = techRecord.techRecord_adrPassCertificateDetails.length.toString();
     this.metaData['test-type-name'] = 'ADR';
     this.metaData['test-type-result'] = adrCertificate.certificateType.toLowerCase();
 
+    // ADR data
     const adrData: AdrCert = {
-      // ADR data
       vin: techRecord.vin,
       make: techRecord.techRecord_vehicleType === 'lgv' ? '' : techRecord.techRecord_make,
       vrm: techRecord.techRecord_vehicleType === 'trl' ? techRecord.trailerId : techRecord.primaryVrm,
