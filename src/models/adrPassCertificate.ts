@@ -41,18 +41,25 @@ export type AdrCert = {
 
 export class AdrPassCertificateDocument extends DocumentModel {
   constructor(request: Request) {
-    super('');
+    super(request.recipientEmailAddress);
     const { techRecord, adrCertificate } = request;
 
     this.setDocumentType(DocumentName.ADR_PASS_CERTIFICATE);
     this.filename = `adr_pass_${techRecord.systemNumber}_${adrCertificate.generatedTimestamp}`;
 
+    const totalCerts = techRecord.techRecord_adrPassCertificateDetails?.length ?? 1;
+
     // S3 metadata
     this.metaData.vin = techRecord.vin;
-    this.metaData['should-email-certificate'] = 'false';
+    this.metaData.vrm = techRecord.techRecord_vehicleType === 'trl' ? techRecord.trailerId : techRecord.primaryVrm;
+    this.metaData['cert-type'] = 'ADR01C';
+    this.metaData['cert-index'] = totalCerts.toString();
+    this.metaData['total-certs'] = totalCerts.toString();
+    this.metaData['test-type-name'] = 'ADR';
+    this.metaData['test-type-result'] = adrCertificate.certificateType.toLowerCase();
 
+    // ADR data
     const adrData: AdrCert = {
-      // ADR data
       vin: techRecord.vin,
       make: techRecord.techRecord_vehicleType === 'lgv' ? '' : techRecord.techRecord_make,
       vrm: techRecord.techRecord_vehicleType === 'trl' ? techRecord.trailerId : techRecord.primaryVrm,
