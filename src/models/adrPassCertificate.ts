@@ -47,12 +47,14 @@ export class AdrPassCertificateDocument extends DocumentModel {
     this.setDocumentType(DocumentName.ADR_PASS_CERTIFICATE);
     this.filename = `adr_pass_${techRecord.systemNumber}_${adrCertificate.generatedTimestamp}`;
 
+    const totalCerts = techRecord.techRecord_adrPassCertificateDetails?.length ?? 1;
+
     // S3 metadata
     this.metaData.vin = techRecord.vin;
     this.metaData.vrms = techRecord.techRecord_vehicleType === 'trl' ? techRecord.trailerId : techRecord.primaryVrm;
     this.metaData['cert-type'] = 'ADR01C';
-    this.metaData['cert-index'] = techRecord.techRecord_adrPassCertificateDetails.length.toString();
-    this.metaData['total-certs'] = techRecord.techRecord_adrPassCertificateDetails.length.toString();
+    this.metaData['cert-index'] = totalCerts.toString();
+    this.metaData['total-certs'] = totalCerts.toString();
     this.metaData['test-type-name'] = 'ADR';
     this.metaData['test-type-result'] = adrCertificate.certificateType.toLowerCase();
 
