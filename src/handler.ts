@@ -54,7 +54,7 @@ function generateStatements(
   const SECONDS_IN_AN_HOUR = 60 * 60;
   const HOURS_IN_A_DAY = 24;
   const secondsSinceEpoch = Math.round(Date.now() / 1000);
-  const expirationTime = (secondsSinceEpoch + HOURS_IN_A_DAY * SECONDS_IN_AN_HOUR) - SECONDS_IN_AN_HOUR;
+  const expirationTime = secondsSinceEpoch + HOURS_IN_A_DAY * SECONDS_IN_AN_HOUR - SECONDS_IN_AN_HOUR;
 
   const drMap = dynamoRecords
     .filter((dr) => !azureMembers.some((am) => am.id === dr.resourceKey))
