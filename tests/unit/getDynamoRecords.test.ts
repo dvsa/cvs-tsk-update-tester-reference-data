@@ -53,10 +53,13 @@ describe('getDynamoMembers', () => {
     expect(mockDynamoQuery).toBeCalledWith({
       TableName: 'testTable',
       KeyConditionExpression: 'resourceType = :type',
-      FilterExpression: 'attribute_not_exists(ttl) or ttl = :null',
+      FilterExpression: 'attribute_not_exists(#ttl_key) or #ttl_key = :null',
       ExpressionAttributeValues: {
         ':type': ResourceType.User,
         ':null': null,
+      },
+      ExpressionAttributeNames: {
+        '#ttl_key': 'ttl',
       },
     } as AWS.DynamoDB.DocumentClient.QueryInput);
   });
