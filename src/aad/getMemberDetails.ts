@@ -27,7 +27,7 @@ export const getMemberDetails = async (): Promise<IMemberDetails[]> => {
 
   const promiseArray = groupIds.map(async (groupId) => {
     const requestUrl = new URL(
-      `/v1.0/groups/${groupId.trim()}/members?$count=true&$filter=accountEnabled eq true`,
+      `/v1.0/groups/${groupId.trim()}/members?$count=true&$top=1000&$filter=accountEnabled eq true`,
       aadBase,
     ).href;
 
