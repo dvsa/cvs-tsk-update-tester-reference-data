@@ -19,19 +19,7 @@ export const getDynamoMembers: () => Promise<IDynamoRecord[]> = async () => {
         '#ttl_key': 'ttl',
       },
     } as QueryCommandInput
-  ))
-  // .query({
-  //   TableName: config.aws.dynamoTable,
-  //   KeyConditionExpression: 'resourceType = :type',
-  //   FilterExpression: 'attribute_not_exists(#ttl_key) or #ttl_key = :null',
-  //   ExpressionAttributeValues: {
-  //     ':type': ResourceType.User,
-  //     ':null': null,
-  //   },
-  //   ExpressionAttributeNames: {
-  //     '#ttl_key': 'ttl',
-  //   },
-  // } as QueryCommandInput);
+  ));
 
   return result.Items as unknown as IDynamoRecord[];
 };
