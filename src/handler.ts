@@ -1,5 +1,3 @@
-import { DynamoDBDocument, PutCommandInput } from '@aws-sdk/lib-dynamodb';
-import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import 'source-map-support/register';
 import IMemberDetails from './aad/IMemberDetails';
 import { getMemberDetails } from './aad/getMemberDetails';
@@ -7,14 +5,15 @@ import config from './config';
 import IDynamoRecord, { ResourceType } from './dynamo/IDynamoRecord';
 import { getDynamoMembers } from './dynamo/getDynamoRecords';
 import logger from './observability/logger';
+import { DynamoDBDocumentClient, PutCommand, PutCommandInput } from "@aws-sdk/lib-dynamodb"
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
 
 const { NODE_ENV, SERVICE, AWS_PROVIDER_REGION, AWS_PROVIDER_STAGE } = process.env;
 
 logger.info(
   `\nRunning Service:\n '${SERVICE}'\n mode: ${NODE_ENV}\n stage: '${AWS_PROVIDER_STAGE}'\n region: '${AWS_PROVIDER_REGION}'\n\n`,
 );
-
-const client = DynamoDBDocument.from(new DynamoDB());
+const client = DynamoDBDocumentClient.from(new DynamoDB());
 
 const handler = async (): Promise<void> => {
   logger.info('Function triggered, getting member details...');
@@ -25,7 +24,7 @@ const handler = async (): Promise<void> => {
 
   logger.info(`Found ${dynamoList.length} existing dynamo records, generating and executing...`);
   const stmts = await Promise.allSettled(
-    generateStatements(azureList, dynamoList).map((stmt) => client.put(stmt)),
+    generateStatements(azureList, dynamoList).map((stmt) => client.send(new PutCommand(stmt))),
   );
 
   stmts.filter((r) => r.status === 'rejected').map((r) => logger.error((<PromiseRejectedResult>r).reason));

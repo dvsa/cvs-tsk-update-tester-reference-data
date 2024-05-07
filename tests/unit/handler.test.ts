@@ -1,9 +1,8 @@
+import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { mockClient } from 'aws-sdk-client-mock';
 import IMemberDetails, { MemberType } from '../../src/aad/IMemberDetails';
 import IDynamoRecord, { ResourceType } from '../../src/dynamo/IDynamoRecord';
 import { handler } from '../../src/handler';
-import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
-import { PutItemCommand } from '@aws-sdk/client-dynamodb';
 
 // has to be 'var' as jest "hoists" execution behind the scenes and let/const cause errors
 /* tslint:disable */
@@ -12,8 +11,6 @@ var mockDynamoRecords: jest.Mock;
 var emptyMemberDetails = true;
 var emptyDynamoDetails = true;
 /* tslint:enable */
-
-const mockDynamoClient = mockClient(DynamoDBDocumentClient);
 
 jest.mock('../../src/aad/getMemberDetails', () => {
   mockMemberDetails = jest.fn().mockResolvedValue(
@@ -48,9 +45,11 @@ jest.mock('../../src/dynamo/getDynamoRecords', () => {
   return { getDynamoMembers: mockDynamoRecords };
 });
 
+const client = mockClient(DynamoDBDocumentClient)
+
 describe('Handler', () => {
   beforeEach(() => {
-    mockDynamoClient.reset();
+    client.reset();
   })
   afterEach(() => {
     jest.clearAllMocks();
@@ -69,36 +68,34 @@ describe('Handler', () => {
 
   it('should run a dynamo put for an active record', async () => {
     emptyMemberDetails = false;
-    mockDynamoClient.on(PutItemCommand).callsFake((params) => {
-      expect(params).toEqual({
-        TableName: '',
-        Item: {
-          resourceType: ResourceType.User,
-          resourceKey: '5afcf0b5-fb7f-4b83-98cc-851a8b27025c',
-          name: 'Test User',
-          email: 'test@example.com',
-        },
-      });
-    })
+    client.on(PutCommand).resolves({});
     await handler();
+    expect(client.call(0).firstArg.input).toEqual({
+      TableName: '',
+      Item: {
+        resourceType: ResourceType.User,
+        resourceKey: '5afcf0b5-fb7f-4b83-98cc-851a8b27025c',
+        name: 'Test User',
+        email: 'test@example.com',
+      },
+    });
   });
 
   it('should run a dynamo put with a ttl for an inactive record', async () => {
     emptyDynamoDetails = false;
-    mockDynamoClient.on(PutItemCommand).callsFake((params) => {
-      expect(params).toEqual(
-        expect.objectContaining({
-          TableName: '',
-          Item: {
-            resourceType: ResourceType.User,
-            resourceKey: '932a98cb-8946-4796-8291-c7bcf4badb50',
-            name: 'Deleted User',
-            email: 'deleted@email.com',
-            ttl: expect.any(Number) as number,
-          },
-        }),
-      );
-    });
+    client.on(PutCommand).resolves({});
     await handler();
+    expect(client.call(1).firstArg.input).toEqual(
+      expect.objectContaining({
+        TableName: '',
+        Item: {
+          resourceType: ResourceType.User,
+          resourceKey: '932a98cb-8946-4796-8291-c7bcf4badb50',
+          name: 'Deleted User',
+          email: 'deleted@email.com',
+          ttl: expect.any(Number) as number,
+        },
+      }),
+    );
   });
 });
