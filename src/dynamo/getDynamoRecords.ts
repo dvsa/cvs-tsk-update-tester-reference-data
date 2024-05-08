@@ -22,6 +22,6 @@ export const getDynamoMembers: () => Promise<IDynamoRecord[]> = async () => {
         },
       } as QueryCommandInput
     ));
-  logger.info(result)
-  return result.Items as unknown as IDynamoRecord[];
+  logger.info('results: ', result)
+  return result.Items ? result.Items as unknown as IDynamoRecord[] : [];
 };
