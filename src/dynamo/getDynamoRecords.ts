@@ -2,7 +2,6 @@ import config from '../config';
 import IDynamoRecord, { ResourceType } from './IDynamoRecord';
 import { DynamoDBDocumentClient, QueryCommandInput, QueryCommand } from "@aws-sdk/lib-dynamodb"
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import logger from '../observability/logger';
 
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient());
 
