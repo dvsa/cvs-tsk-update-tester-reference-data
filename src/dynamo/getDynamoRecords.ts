@@ -2,6 +2,7 @@ import config from '../config';
 import IDynamoRecord, { ResourceType } from './IDynamoRecord';
 import { DynamoDBDocumentClient, QueryCommandInput } from "@aws-sdk/lib-dynamodb"
 import { DynamoDBClient, QueryCommand } from "@aws-sdk/client-dynamodb";
+import logger from '../observability/logger';
 
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient());
 
@@ -21,6 +22,6 @@ export const getDynamoMembers: () => Promise<IDynamoRecord[]> = async () => {
         },
       } as QueryCommandInput
     ));
-
+  logger.info(result)
   return result.Items as unknown as IDynamoRecord[];
 };
