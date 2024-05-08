@@ -1,5 +1,4 @@
-import { QueryCommand } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, QueryCommandOutput } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, QueryCommandOutput, QueryCommand } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 import config from '../../src/config';
 import { ResourceType } from '../../src/dynamo/IDynamoRecord';
