@@ -147,8 +147,8 @@ describe('getMemberDetails', () => {
     ];
 
     mockAxiosGet.mockResolvedValueOnce({
-      data: { 
-        '@nextlink': "https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled%20eq%20true$skipToken=token", 
+      data: {
+        '@nextlink': "https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled%20eq%20true$skipToken=token",
         value: members },
     });
     mockAxiosGet.mockResolvedValueOnce({
@@ -163,8 +163,8 @@ describe('getMemberDetails', () => {
 it('should call the skip token url when one is provided', async () => {
 
   mockAxiosGet.mockResolvedValueOnce({
-    data: { 
-      '@nextlink': "https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled%20eq%20true$skipToken=token", 
+    data: {
+      '@nextlink': "https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled%20eq%20true$skipToken=token",
       value: [] },
   });
 
