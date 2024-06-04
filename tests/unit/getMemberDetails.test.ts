@@ -164,13 +164,13 @@ it('should call the skip token url when one is provided', async () => {
 
   mockAxiosGet.mockResolvedValueOnce({
     data: {
-      '@nextlink': "https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled%20eq%20true$skipToken=token",
+      '@nextlink': "https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled+eq+true$skipToken=token",
       value: [] },
   });
 
   await getMemberDetails();
   expect(mockAxiosGet).toBeCalledWith(
-    'https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled%20eq%20true$skipToken=token',
+    'https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled eq true$skipToken=token',
     {
       headers: { Authorization: 'Bearer testToken', ConsistencyLevel: 'eventual' },
     },

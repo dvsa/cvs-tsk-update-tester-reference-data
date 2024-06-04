@@ -44,7 +44,8 @@ export const getMemberDetails = async (): Promise<IMemberDetails[]> => {
     let users = response.data.value
 
     while (response.data['@nextlink']) {
-      response = await axios.get<MemberList>(response.data['@nextlink'], {
+      const nextlink = response.data['@nextlink'].replace('accountEnabled+eq+true', 'accountEnabled eq true')
+      response = await axios.get<MemberList>(nextlink, {
         headers: { Authorization: `Bearer ${accessToken}`, ConsistencyLevel: 'eventual' },
       });
       users = users.concat(response.data.value)
