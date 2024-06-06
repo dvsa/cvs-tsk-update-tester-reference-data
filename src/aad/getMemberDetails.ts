@@ -44,6 +44,8 @@ export const getMemberDetails = async (): Promise<IMemberDetails[]> => {
     let users = response.data.value
 
     while (response.data['@odata.nextLink']) {
+      logger.info(`pagination needed for group ${groupId.trim()}. Fetching next ${config.aad.membersToRequest} users`)
+      
       const nextlink = response.data['@odata.nextLink'].replace('accountEnabled+eq+true', 'accountEnabled eq true')
       response = await axios.get<MemberList>(nextlink, {
         headers: { Authorization: `Bearer ${accessToken}`, ConsistencyLevel: 'eventual' },
