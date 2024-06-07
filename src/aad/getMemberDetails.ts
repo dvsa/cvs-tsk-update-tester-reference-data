@@ -6,6 +6,7 @@ import IMemberDetails, { MemberType } from './IMemberDetails';
 import getToken from './getToken';
 
 interface MemberList {
+  '@odata.nextLink': string;
   value: IMemberDetails[];
 }
 
@@ -27,7 +28,7 @@ export const getMemberDetails = async (): Promise<IMemberDetails[]> => {
 
   const promiseArray = groupIds.map(async (groupId) => {
     const requestUrl = new URL(
-      `/v1.0/groups/${groupId.trim()}/members?$count=true&$top=999&$filter=accountEnabled eq true`,
+      `/v1.0/groups/${groupId.trim()}/members?$count=true&$top=${config.aad.membersToRequest}&$filter=accountEnabled eq true`,
       aadBase,
     ).href;
 
@@ -36,10 +37,23 @@ export const getMemberDetails = async (): Promise<IMemberDetails[]> => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-    const response = await axios.get<MemberList>(requestUrl, {
+    let response = await axios.get<MemberList>(requestUrl, {
       headers: { Authorization: `Bearer ${accessToken}`, ConsistencyLevel: 'eventual' },
     });
-    return response.data.value;
+
+    let users = response.data.value
+
+    while (response.data['@odata.nextLink']) {
+      logger.info(`pagination needed for group ${groupId.trim()}. Fetching next ${config.aad.membersToRequest} users`)
+      
+      const nextlink = response.data['@odata.nextLink'].replace('accountEnabled+eq+true', 'accountEnabled eq true')
+      response = await axios.get<MemberList>(nextlink, {
+        headers: { Authorization: `Bearer ${accessToken}`, ConsistencyLevel: 'eventual' },
+      });
+      users = users.concat(response.data.value)
+    }
+
+    return users;
   });
 
   const results = await Promise.allSettled(promiseArray);
