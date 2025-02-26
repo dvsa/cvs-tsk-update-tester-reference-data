@@ -132,4 +132,47 @@ describe('getMemberDetails', () => {
     const result = await getMemberDetails();
     expect(result).toHaveLength(2);
   });
+
+  it('should keep fetching users until no skip token is returned', async () => {
+    config.aad.groupId = 'testGroup1';
+    const members = [
+      generateUser('a62188fb-a6dc-4a8a-8882-c155130d6a56'),
+      { id: '07299098-5955-4de0-be5f-cba7337f30de', '@odata.type': '#microsoft.graph.device' },
+      generateUser('7a86586e-8eb5-46a0-b3a1-f957b03aa7af'),
+    ];
+    const members2 = [
+      generateUser('2e275dcc-54fe-488f-86ea-2dec2b6872a8'),
+      { id: '07299098-5955-4de0-be5f-cba7337f30de', '@odata.type': '#microsoft.graph.device' },
+      generateUser('15354861-0826-4fe9-8f42-e61c81fd79a3'),
+    ];
+
+    mockAxiosGet.mockResolvedValueOnce({
+      data: {
+        '@odata.nextLink': "https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled%20eq%20true$skipToken=token",
+        value: members },
+    });
+    mockAxiosGet.mockResolvedValueOnce({
+      data: { value: members2 },
+    });
+
+    const result = await getMemberDetails();
+    expect(result).toHaveLength(4);
+  });
+});
+
+it('should call the skip token url when one is provided', async () => {
+
+  mockAxiosGet.mockResolvedValueOnce({
+    data: {
+      '@odata.nextLink': "https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled+eq+true$skipToken=token",
+      value: [] },
+  });
+
+  await getMemberDetails();
+  expect(mockAxiosGet).toBeCalledWith(
+    'https://test/v1.0/groups/testGroup/members?$count=true&$top=999&$filter=accountEnabled eq true$skipToken=token',
+    {
+      headers: { Authorization: 'Bearer testToken', ConsistencyLevel: 'eventual' },
+    },
+  );
 });
